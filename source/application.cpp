@@ -11,7 +11,7 @@ Application::Application(int width,
 {
 	mouseX = (double)width / 2.;
 	mouseY = (double)height / 2.;
-	numberFragments = fragmentFileList.size();
+	numberFragments = (int)fragmentFileList.size();
 
 	// initialize GLFW
 	if (!glfwInit())
@@ -114,7 +114,7 @@ void Application::key_input_callback(GLFWwindow* window, int key, int scancode, 
 	{
 		handler->currectFragment--;
 		if (handler->currectFragment < 0)
-			handler->currectFragment = handler->numberFragments;
+			handler->currectFragment = handler->numberFragments-1;
 		handler->compileShader();
 	}
 }

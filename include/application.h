@@ -38,8 +38,8 @@ public:
 
 	// fragment files list
 	vector<fs::path> fragmentFileList;
-	size_t currectFragment = 0;
-	size_t numberFragments;
+	int currectFragment = 0;
+	int numberFragments;
 
 	// mouse positions
 	double mouseX, mouseY;
