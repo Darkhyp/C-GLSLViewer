@@ -108,14 +108,16 @@ void Application::key_input_callback(GLFWwindow* window, int key, int scancode, 
 		handler->currectFragment++;
 		if (handler->currectFragment >= handler->numberFragments)
 			handler->currectFragment = 0;
-		handler->compileShader();
+		if (handler->numberFragments > 1)
+			handler->compileShader();
 	}
 	if (key == GLFW_KEY_LEFT_BRACKET and action == GLFW_RELEASE)
 	{
 		handler->currectFragment--;
 		if (handler->currectFragment < 0)
 			handler->currectFragment = handler->numberFragments-1;
-		handler->compileShader();
+		if (handler->numberFragments > 1)
+			handler->compileShader();
 	}
 }
 
@@ -127,6 +129,7 @@ void Application::mouse_move_callback(GLFWwindow* window, double  xpos, double  
 	handler->mouseY = ypos;
 }
 
+// square window
 vector<GLfloat> vertices = vector<GLfloat>({
 	-1.f, -1.f, 0.f,
 	 1.f, -1.f, 0.f,
@@ -167,7 +170,7 @@ void Application::BindUniforms()
 	glUniform2fv(resolutionLocation, 1, value_ptr(glm::vec2(width, height)));
 
 	GLint mouseLocation = glGetUniformLocation(shaderProgram->ID, "u_mouse");
-//	glfwGetCursorPos(window, &mouse_x, &mouse_y);
+//	glfwGetCursorPos(window, &mouseX, &mouseY);
 	glUniform2fv(mouseLocation, 1, value_ptr(glm::vec2((float)mouseX, (float)height - (float)mouseY)));
 
 	GLint timeLocation = glGetUniformLocation(shaderProgram->ID, "u_time");

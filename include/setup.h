@@ -18,9 +18,6 @@ public:
 	int width, height;
 	string vertexSource, fragmentSource;
 
-	string fragmentSourceFolder;
-	string fragmentSourceExtension;
-
 	Setup(string iniFileName);
 
 	void load();

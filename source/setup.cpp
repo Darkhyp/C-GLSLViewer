@@ -67,58 +67,52 @@ void Setup::load()
 	map<string, string> optionMap = ReadINIValues(iniFileName);
 
 	// ******************** treating values from setup file ************************
+	// check width option
 	try
 	{
 		width = stoi(optionMap["width"]);
 	}
 	catch (...)
 	{
-		cout << "window width is not defined. Use dafault 800." << endl;
+		cout << "window width is not defined. Use default 800." << endl;
 		width = 800;
 	}
 	cout << "width = " << width << endl;
 	
+	// check height option
 	try
 	{
 		height = stoi(optionMap["height"]);
 	}
 	catch (...)
 	{
-		cout << "window height is not defined. Use dafault 600." << endl;
+		cout << "window height is not defined. Use default 600." << endl;
 		height = 600;
 	}
 	cout << "height = " << height << endl;
 	
+	// check vertexSource option
 	try
 	{
 		vertexSource = optionMap["vertexSource"];
-		cout << "vertexSource from  '" << vertexSource << "'" << endl;
+		cout << "Using vertexSource from '" << vertexSource << "'" << endl;
 	}
 	catch (...)
 	{
 		cout << "vertexSource is not defined. Exit..." << endl;
 		exit(0);
 	}
-
+	
+	// check fragmentSource option
 	try
 	{
-		fragmentSourceFolder = optionMap["fragmentSourceFolder"];
-		cout << "fragmentSourceFolder is  '" << fragmentSourceFolder << "'" << endl;
+		fragmentSource = optionMap["fragmentSource"];
+		cout << "Using fragmentSource from '" << fragmentSource << "'" << endl;
 	}
 	catch (...)
 	{
-		cout << "fragmentSourceFolder is not defined. Exit..." << endl;
+		cout << "fragmentSource is not defined. Exit..." << endl;
 		exit(0);
-	}
-
-	try
-	{
-		fragmentSourceExtension = optionMap["fragmentSourceExtension"];
-		cout << "fragmentSourceExtension is  '" << fragmentSourceExtension << "'" << endl;
-	}
-	catch (...)
-	{
-		cout << "imageSource is not defined. Use default 'frag'" << endl;
 	}
 
 

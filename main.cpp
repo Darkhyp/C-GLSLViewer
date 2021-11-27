@@ -10,7 +10,7 @@
 #include <iostream>
 #include <filesystem>
 namespace fs = std::filesystem;
-
+using namespace std;
 
 int main(int argc, char **argv) {
 	// check external arguments
@@ -30,21 +30,37 @@ int main(int argc, char **argv) {
 	Setup setup(iniFileName);
 	setup.load();
 
-	// load file list
-	vector<std::filesystem::path> fragmentFileList;
-	if (fs::is_directory(setup.fragmentSourceFolder)) {
-		copy_if(
-			fs::directory_iterator(setup.fragmentSourceFolder),
-			fs::directory_iterator(),
-			back_inserter(fragmentFileList),
-			[&](auto x) {return x.path().extension() == setup.fragmentSourceExtension; });
-	}	
+	// load fragment file list
+	vector<fs::path> fragmentFileList;
+	auto path = fs::path(setup.fragmentSource);
+	if (path.has_filename())
+	{
+		// check if it is a file list
+		if (path.stem() == "*")
+		{
+			if (fs::exists(path.parent_path()))
+			{
+				copy_if(
+					fs::directory_iterator(path.parent_path()),
+					fs::directory_iterator(),
+					back_inserter(fragmentFileList),
+					[&](auto x) {return x.path().extension() == path.extension(); });
+			}
+		}
+		else
+			fragmentFileList.push_back(path);
+	}
+
+	// exit is file list is empty
 	if (fragmentFileList.size() > 0)
 	{
-		cout << "List of fragment files:" << endl;
-		// print list of  in alphabetical order
-		for (const auto& filename : fragmentFileList) {
-			cout << filename.string() << endl;
+		if (fragmentFileList.size() > 1)
+		{
+			cout << "List of fragment files:" << endl;
+			// print list of  in alphabetical order
+			for (const auto& filename : fragmentFileList) {
+				cout << filename.string() << endl;
+			}
 		}
 	}
 	else
@@ -55,7 +71,7 @@ int main(int argc, char **argv) {
 	
 
 	// ******************** main application ************************
-	cout << "Shader viewer. View shaders from folder '" << setup.fragmentSourceFolder << "'" << std::endl;
+	cout << "Shader viewer" << std::endl;
 
 	Application app(setup.width, setup.height, "Shader viewer", setup.vertexSource, fragmentFileList);
 
