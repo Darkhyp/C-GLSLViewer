@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
 	// ******************** main application ************************
 	cout << "Shader viewer" << std::endl;
 
-	Application app(setup, "Shader viewer");
+	Application app(setup, string("Shader viewer"));
 
 	app.mainLoop();
 

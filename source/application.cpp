@@ -46,7 +46,7 @@ vector<fs::path> loadFragments(string fragmentSource)
 
 
 
-Application::Application(Setup setup, const char* title): title(title)
+Application::Application(Setup setup, string title): title(title)
 {
 
 	width = setup.width;
@@ -78,7 +78,7 @@ Application::Application(Setup setup, const char* title): title(title)
 */
 
 	// create a GLFW window of widthxheight pixels, named title
-	window = glfwCreateWindow(width, height, title, NULL, NULL);
+	window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 	// Error check if window fails to create
 	if (window == NULL) {
 		cout << "Cannot create GLFW window! Exit..." << endl;
@@ -200,7 +200,10 @@ void Application::prepareViewShader()
 void Application::compileShader()
 {
 	string fragmentSource = fragmentFileList[currectFragment].string();
+	new_title = title + " - " + fragmentFileList[currectFragment].filename().string();
 	cout << "Compile fragment: '" << fragmentSource << "'" << endl;
+	// set new window title
+	glfwSetWindowTitle(window, new_title.c_str());
 	glUseProgram(0);
 
 	// create shaders
@@ -243,6 +246,8 @@ void Application::mainLoop()
 	{
 		// take care of GLFW events
 		glfwPollEvents();
+		nbFrames++;
+		showFPS();
 
 		// specify the color of background
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
@@ -264,3 +269,23 @@ void Application::mainLoop()
 	}
 }
 
+
+
+void Application::showFPS()
+{
+	// Measure speed
+	double currentTime = glfwGetTime();
+	double delta = currentTime - lastTime;
+	// show FPS if last cout was more than 1 sec ago
+	if (delta >= 1.0) {
+		double fps = double(nbFrames) / delta;
+
+		stringstream fps_title;
+		fps_title << new_title << " [" << fixed << setprecision(2) << fps << " FPS]";
+
+		glfwSetWindowTitle(window, fps_title.str().c_str());
+
+		nbFrames = 0;
+		lastTime = currentTime;
+	}
+}

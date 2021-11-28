@@ -27,7 +27,7 @@ class Application
 public:
 	GLFWwindow* window;
 	int width, height;
-	const char* title;
+	string title, new_title;
 
 	Shader* shaderProgram;
 
@@ -46,8 +46,11 @@ public:
 	// mouse positions
 	double mouseX, mouseY;
 
+	// FPS measuremnt
+	double lastTime;
+	unsigned int nbFrames = 0;
 
-	Application(Setup setup, const char* title);
+	Application(Setup setup, string title);
 	~Application();
 
 	static void window_resize(GLFWwindow* window, int width, int height);
@@ -57,6 +60,8 @@ public:
 	void prepareViewShader();
 	void compileShader();
 	void setTextures(string textureSource, string textureUniformName);
+
+	void showFPS();
 
 	void BindUniforms();
 	void mainLoop();
