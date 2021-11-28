@@ -115,5 +115,29 @@ void Setup::load()
 		exit(0);
 	}
 
+	// check textureSource option
+	try
+	{
+		textureSource = optionMap["textureSource"];
+		cout << "Using textureSource from '" << textureSource << "'" << endl;
+	}
+	catch (...)
+	{
+		cout << "textureSource is not defined. Exit..." << endl;
+		exit(0);
+	}
+
+	// check textureUniformName option
+	try
+	{
+		textureUniformName = optionMap["textureUniformName"];
+		cout << "Using textureUniformName = '" << textureUniformName << "'" << endl;
+	}
+	catch (...)
+	{
+		cout << "textureUniformName is not defined. Exit..." << endl;
+		exit(0);
+	}
+
 
 }

@@ -16,7 +16,7 @@ public:
 
 	// window size
 	int width, height;
-	string vertexSource, fragmentSource;
+	string vertexSource, fragmentSource, textureUniformName, textureSource;
 
 	Setup(string iniFileName);
 

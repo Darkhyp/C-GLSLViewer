@@ -1,14 +1,59 @@
 #include "application.h"
 
-Application::Application(int width,
-	int height,
-	const char* title,
-	string vertexSource,
-	vector<fs::path> fragmentFileList):
-	width(width), height(height), title(title),
-	vertexSource(vertexSource),
-	fragmentFileList(fragmentFileList)
+// load fragment file list
+vector<fs::path> loadFragments(string fragmentSource)
 {
+	vector<fs::path> fragmentFileList;
+	auto path = fs::path(fragmentSource);
+	if (path.has_filename())
+	{
+		// check if it is a file list
+		if (path.stem() == "*")
+		{
+			if (fs::exists(path.parent_path()))
+			{
+				copy_if(
+					fs::directory_iterator(path.parent_path()),
+					fs::directory_iterator(),
+					back_inserter(fragmentFileList),
+					[&](auto x) {return x.path().extension() == path.extension(); });
+			}
+		}
+		else
+			fragmentFileList.push_back(path);
+	}
+
+	// exit is file list is empty
+	if (fragmentFileList.size() > 0)
+	{
+		if (fragmentFileList.size() > 1)
+		{
+			cout << "List of fragment files:" << endl;
+			// print list of  in alphabetical order
+			for (const auto& filename : fragmentFileList) {
+				cout << filename.string() << endl;
+			}
+		}
+	}
+	else
+	{
+		cout << "Could not read fragment files! Check folder of extention is ini-file." << endl;
+		exit(EXIT_SUCCESS);
+	}
+
+	return fragmentFileList;
+}
+
+
+
+Application::Application(Setup setup, const char* title): title(title)
+{
+
+	width = setup.width;
+	height = setup.height;
+	vertexSource = setup.vertexSource;
+	fragmentFileList = loadFragments(setup.fragmentSource);
+
 	mouseX = (double)width / 2.;
 	mouseY = (double)height / 2.;
 	numberFragments = (int)fragmentFileList.size();
@@ -66,12 +111,13 @@ Application::Application(int width,
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
 	//glDisable(GL_CULL_FACE);
 	glEnable(GL_CULL_FACE);
 
 	prepareViewShader();
 	compileShader();
+	setTextures(setup.textureSource, setup.textureUniformName);
+
 }
 
 Application::~Application()
@@ -176,7 +222,18 @@ void Application::BindUniforms()
 	GLint timeLocation = glGetUniformLocation(shaderProgram->ID, "u_time");
 	float time = (float)glfwGetTime();
 	glUniform1f(timeLocation, time);
+}
 
+void Application::setTextures(string textureSource, string textureUniformName)
+{
+	// textures
+	if (fs::exists(textureSource))
+	{
+		texture = new Texture(textureSource, GL_TEXTURE_2D, 0, GL_UNSIGNED_BYTE);
+		texture->textureInit(shaderProgram, textureUniformName.c_str(), 0);
+		// unbind to avoid accidental modification 
+//		texture->Unbind();
+	}
 }
 
 void Application::mainLoop()
@@ -197,7 +254,7 @@ void Application::mainLoop()
 		BindUniforms();
 
 //		shaderProgram->Activate();
-		//cubeTexture->Bind();
+//		texture->Bind();
 //		vao->Bind();
 		// draw vertices
 		glDrawArrays(GL_QUADS, 0, 4);

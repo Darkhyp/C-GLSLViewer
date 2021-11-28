@@ -14,6 +14,8 @@
 #include <string>
 #include <iostream>
 #include <filesystem>
+#include <setup.h>
+#include <texture.h>
 namespace fs = std::filesystem;
 using namespace std;
 
@@ -31,7 +33,7 @@ public:
 
 	VAO* vao;
 	VBO* vbo;
-	//Texture* cubeTexture, *cubeSpecularMap;
+	Texture* texture;
 
 	// vertex file
 	string vertexSource;
@@ -45,7 +47,7 @@ public:
 	double mouseX, mouseY;
 
 
-	Application(int width, int height, const char* title, string vertexSource, vector<fs::path> fragmentFileList);
+	Application(Setup setup, const char* title);
 	~Application();
 
 	static void window_resize(GLFWwindow* window, int width, int height);
@@ -54,6 +56,7 @@ public:
 
 	void prepareViewShader();
 	void compileShader();
+	void setTextures(string textureSource, string textureUniformName);
 
 	void BindUniforms();
 	void mainLoop();
